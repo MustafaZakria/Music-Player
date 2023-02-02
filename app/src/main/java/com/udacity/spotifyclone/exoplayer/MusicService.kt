@@ -57,7 +57,7 @@ class MusicService: MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-
+        return null
     }
 
     override fun onLoadChildren(
