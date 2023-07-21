@@ -45,7 +45,7 @@ class MusicServiceConnection(
         ),
         mediaBrowserConnectionCallback,
         null
-    ).apply { context }
+    ).apply { connect() }
 
     val transportControls: MediaControllerCompat.TransportControls  //skip, resume, pause song
         get() = mediaController.transportControls
