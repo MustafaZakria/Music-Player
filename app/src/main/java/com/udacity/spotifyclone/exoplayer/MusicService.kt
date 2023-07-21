@@ -2,6 +2,7 @@ package com.udacity.spotifyclone.exoplayer
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.net.Network
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -17,6 +18,7 @@ import com.udacity.spotifyclone.exoplayer.callbacks.MusicPlaybackPreparer
 import com.udacity.spotifyclone.exoplayer.callbacks.MusicPlayerEventListener
 import com.udacity.spotifyclone.exoplayer.callbacks.MusicPlayerNotificationListener
 import com.udacity.spotifyclone.util.Constants.MEDIA_ROOT_ID
+import com.udacity.spotifyclone.util.Constants.NETWORK_ERROR
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -155,6 +157,7 @@ class MusicService : MediaBrowserServiceCompat() {
                             isPlayerInitialized = true
                         }
                     } else {
+                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
                         result.sendResult(null)
                     }
 
