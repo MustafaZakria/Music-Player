@@ -5,6 +5,7 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
+import android.util.Log
 import androidx.core.net.toUri
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
@@ -13,6 +14,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.udacity.spotifyclone.data.remote.MusicDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class FirebaseMusicSource @Inject constructor(
@@ -21,23 +23,27 @@ class FirebaseMusicSource @Inject constructor(
 
     var songs = emptyList<MediaMetadataCompat>()
 
-    suspend fun fetchMediaData() = withContext(Dispatchers.IO) {
+    suspend fun fetchMediaData() {
         state = State.STATE_INITIALIZING
+        getAllSongs()
+        state = State.STATE_INITIALIZED
+    }
+
+    private suspend fun getAllSongs() = withContext(Dispatchers.IO) {
         val allSongs = musicDatabase.getAllSongs()
         songs = allSongs.map { song ->
-            MediaMetadataCompat.Builder()
+            Builder()
                 .putString(METADATA_KEY_ARTIST, song.subtitle)
                 .putString(METADATA_KEY_MEDIA_ID, song.mediaId)
                 .putString(METADATA_KEY_TITLE, song.title)
                 .putString(METADATA_KEY_DISPLAY_TITLE, song.title)
-                .putString(METADATA_KEY_DISPLAY_ICON, song.imageUrl)
-                .putString(METADATA_KEY_ALBUM_ART_URI, song.imageUrl)
+                .putString(METADATA_KEY_DISPLAY_ICON_URI, song.imageUrl)
                 .putString(METADATA_KEY_MEDIA_URI, song.songUrl)
+                .putString(METADATA_KEY_ALBUM_ART_URI, song.imageUrl)
                 .putString(METADATA_KEY_DISPLAY_SUBTITLE, song.subtitle)
                 .putString(METADATA_KEY_DISPLAY_DESCRIPTION, song.subtitle)
                 .build()
         }
-        state = State.STATE_INITIALIZED
     }
 
     fun asMediaSource(dataSourceFactory: DefaultDataSourceFactory): ConcatenatingMediaSource {   //concatenate all songs to play next

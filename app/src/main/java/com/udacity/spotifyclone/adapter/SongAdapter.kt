@@ -1,23 +1,20 @@
 package com.udacity.spotifyclone.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.udacity.spotifyclone.R
 import com.udacity.spotifyclone.data.models.Song
-import kotlinx.android.synthetic.main.list_item.view.*
+import com.udacity.spotifyclone.databinding.ListItemBinding
 import javax.inject.Inject
 
 class SongAdapter @Inject constructor(
     private val glide: RequestManager
 ) : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
 
-    class SongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class SongViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     private val diffCallback = object : DiffUtil.ItemCallback<Song>() {
         override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
@@ -37,23 +34,19 @@ class SongAdapter @Inject constructor(
         set(value) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        return SongViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item,
-                parent,
-                false
-            )
-        )
+        val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SongViewHolder(binding)
+
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = songs[position]
-        holder.itemView.apply {
+        holder.binding.apply {
             tvPrimary.text = song.title
             tvSecondary.text = song.subtitle
             glide.load(song.imageUrl).into(ivItemImage)
 
-            setOnClickListener {
+            root.setOnClickListener {
                 onItemClickListener?.let { click ->
                     click(song)
                 }
@@ -63,7 +56,7 @@ class SongAdapter @Inject constructor(
 
     private var onItemClickListener: ((Song) -> Unit)? = null
 
-    fun srtOnItemClickListener(listener: (Song) -> Unit) {
+    fun setOnItemClickListener(listener: (Song) -> Unit) {
         onItemClickListener = listener
     }
 

@@ -1,6 +1,7 @@
 package com.udacity.spotifyclone.exoplayer
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.content.Intent
 import android.net.Network
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -19,11 +21,14 @@ import com.udacity.spotifyclone.exoplayer.callbacks.MusicPlayerEventListener
 import com.udacity.spotifyclone.exoplayer.callbacks.MusicPlayerNotificationListener
 import com.udacity.spotifyclone.util.Constants.MEDIA_ROOT_ID
 import com.udacity.spotifyclone.util.Constants.NETWORK_ERROR
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 private const val SERVICE_TAG = "MusicService"
 
+@AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat() {
 
     @Inject
@@ -60,10 +65,11 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onCreate()
         serviceScope.launch {
             firebaseMusicSource.fetchMediaData()
+            Timber.tag("***").d("fetched")
         }
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
+            PendingIntent.getActivity(this, 0, it, FLAG_MUTABLE)
         }
 
         mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {

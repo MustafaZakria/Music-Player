@@ -1,4 +1,4 @@
-package com.udacity.spotifyclone.ui
+package com.udacity.spotifyclone.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
