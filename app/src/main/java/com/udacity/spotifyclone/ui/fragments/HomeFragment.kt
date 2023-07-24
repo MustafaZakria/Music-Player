@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.udacity.spotifyclone.R
 import com.udacity.spotifyclone.adapter.SongAdapter
+import com.udacity.spotifyclone.adapter.SongListener
 import com.udacity.spotifyclone.databinding.FragmentHomeBinding
 import com.udacity.spotifyclone.ui.viewmodels.MainViewmodel
 import com.udacity.spotifyclone.util.Status
@@ -26,7 +27,6 @@ class HomeFragment : Fragment() {
 
     lateinit var mainViewmodel: MainViewmodel
 
-    @Inject
     lateinit var songAdapter: SongAdapter
 
     override fun onCreateView(
@@ -38,6 +38,11 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
         mainViewmodel = ViewModelProvider(requireActivity())[MainViewmodel::class.java]
+
+        songAdapter = SongAdapter(SongListener { song ->
+            mainViewmodel.playOrToggleSong(song)
+        })
+
         return binding.root
     }
 
@@ -46,10 +51,6 @@ class HomeFragment : Fragment() {
 
         setUpRecyclerView()
         subscribeToObservers()
-
-        songAdapter.setOnItemClickListener {
-            mainViewmodel.playOrToggleSong(it)
-        }
     }
 
     private fun setUpRecyclerView() = binding.rvAllSongs.apply {
@@ -58,13 +59,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        Log.d("***", "hi observers")
         mainViewmodel.mediaItems.observe(viewLifecycleOwner) { result ->
             when (result.status) {
                 Status.SUCCESS -> {
                     binding.allSongsProgressBar.isVisible = false
                     result.data?.let { songs ->
-                        songAdapter.songs = songs
+                        songAdapter.submitList(songs)
                     }
                 }
                 Status.ERROR -> Unit

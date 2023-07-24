@@ -18,20 +18,16 @@ class MusicServiceConnection(
     context: Context
 ) {
     private val _isConnected = MutableLiveData<Event<Resource<Boolean>>>()
-    val isConnected: LiveData<Event<Resource<Boolean>>>
-        get() = _isConnected
+    val isConnected: LiveData<Event<Resource<Boolean>>> = _isConnected
 
     private val _networkError = MutableLiveData<Event<Resource<Boolean>>>()
-    val networkError: LiveData<Event<Resource<Boolean>>>
-        get() = _networkError
+    val networkError: LiveData<Event<Resource<Boolean>>> = _networkError
 
     private val _playbackState = MutableLiveData<PlaybackStateCompat?>()
-    val playbackState: LiveData<PlaybackStateCompat?>
-        get() = _playbackState
+    val playbackState: LiveData<PlaybackStateCompat?> = _playbackState
 
     private val _curPlayingSong = MutableLiveData<MediaMetadataCompat?>()
-    val curPlayingSong: LiveData<MediaMetadataCompat?>
-        get() = _curPlayingSong
+    val curPlayingSong: LiveData<MediaMetadataCompat?> = _curPlayingSong
 
     lateinit var mediaController: MediaControllerCompat
 
@@ -47,7 +43,7 @@ class MusicServiceConnection(
         null
     ).apply { connect() }
 
-    val transportControls: MediaControllerCompat.TransportControls  //skip, resume, pause song
+    val transportControls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls
 
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
@@ -60,7 +56,8 @@ class MusicServiceConnection(
 
     private inner class MediaBrowserConnectionCallback(
         private val context: Context
-    ) : MediaBrowserCompat.ConnectionCallback() {
+    ): MediaBrowserCompat.ConnectionCallback() {
+
         override fun onConnected() {
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
@@ -81,7 +78,7 @@ class MusicServiceConnection(
         }
     }
 
-    private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
+    private inner class MediaControllerCallback: MediaControllerCompat.Callback() {
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             _playbackState.postValue(state)
@@ -91,20 +88,18 @@ class MusicServiceConnection(
             _curPlayingSong.postValue(metadata)
         }
 
-
-        override fun onSessionEvent(event: String?, extras: Bundle?) { //notified when network error
+        override fun onSessionEvent(event: String?, extras: Bundle?) {
             super.onSessionEvent(event, extras)
-            when (event) {
+            when(event) {
                 NETWORK_ERROR -> _networkError.postValue(
                     Event(
                         Resource.error(
-                            "couldn't connect to the server. Please check your internet connection.",
+                            "Couldn't connect to the network. Check your internet connection",
                             null
                         )
                     )
                 )
             }
-
         }
 
         override fun onSessionDestroyed() {

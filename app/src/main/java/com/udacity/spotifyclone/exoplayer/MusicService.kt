@@ -11,6 +11,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -35,7 +36,7 @@ class MusicService : MediaBrowserServiceCompat() {
     lateinit var dataSourceFactory: DefaultDataSourceFactory
 
     @Inject
-    lateinit var exoPlayer: SimpleExoPlayer
+    lateinit var exoPlayer: ExoPlayer
 
     @Inject
     lateinit var firebaseMusicSource: FirebaseMusicSource
@@ -65,7 +66,6 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onCreate()
         serviceScope.launch {
             firebaseMusicSource.fetchMediaData()
-            Timber.tag("***").d("fetched")
         }
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {

@@ -2,6 +2,7 @@ package com.udacity.spotifyclone.ui.viewmodels
 
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,9 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewmodel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
-): ViewModel(){
+) : ViewModel() {
     private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
-    val mediaItems : LiveData<Resource<List<Song>>> = _mediaItems
+    val mediaItems: LiveData<Resource<List<Song>>> = _mediaItems
 
     val isConnected = musicServiceConnection.isConnected
     val networkError = musicServiceConnection.networkError
@@ -29,24 +30,28 @@ class MainViewmodel @Inject constructor(
 
     init {
         _mediaItems.postValue(Resource.loading(null))
-        musicServiceConnection.subscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {
-            override fun onChildrenLoaded(
-                parentId: String,
-                children: MutableList<MediaBrowserCompat.MediaItem>
-            ) {
-                super.onChildrenLoaded(parentId, children)
-                val items = children.map {
-                    Song(
-                        it.mediaId!!,
-                        it.description.title.toString(),
-                        it.description.subtitle.toString(),
-                        it.description.mediaUri.toString(),
-                        it.description.iconUri.toString()
-                    )
+        musicServiceConnection.subscribe(
+            MEDIA_ROOT_ID,
+            object : MediaBrowserCompat.SubscriptionCallback() {
+                override fun onChildrenLoaded(
+                    parentId: String,
+                    children: MutableList<MediaBrowserCompat.MediaItem>
+                ) {
+                    super.onChildrenLoaded(parentId, children)
+                    val items = children.map {
+                        Song(
+                            it.description.iconUri.toString(),
+                            it.mediaId!!,
+                            it.description.mediaUri.toString(),
+                            it.description.subtitle.toString(),
+                            it.description.title.toString()
+                        )
+
+                    }
+                    Log.d("***", items.toString())
+                    _mediaItems.postValue(Resource.success(items))
                 }
-                _mediaItems.postValue(Resource.success(items))
-            }
-        })
+            })
     }
 
     fun skipToNextSong() {
@@ -63,11 +68,12 @@ class MainViewmodel @Inject constructor(
 
     fun playOrToggleSong(mediaItem: Song, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if(isPrepared && mediaItem.mediaId ==
-                curPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
+        if (isPrepared && mediaItem.mediaId ==
+            curPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)
+        ) {
             playbackState.value?.let { playbackState ->
                 when {
-                    playbackState.isPlaying -> if(toggle) musicServiceConnection.transportControls.pause()
+                    playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()
                     playbackState.isPlayEnabled -> musicServiceConnection.transportControls.play()
                     else -> Unit
                 }
@@ -79,6 +85,8 @@ class MainViewmodel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnection.unsubscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {})
+        musicServiceConnection.unsubscribe(
+            MEDIA_ROOT_ID,
+            object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 }
