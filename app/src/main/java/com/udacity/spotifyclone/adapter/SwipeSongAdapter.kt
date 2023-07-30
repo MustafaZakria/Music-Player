@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import com.udacity.spotifyclone.databinding.SwipeItemBinding
 
 class SwipeSongAdapter constructor(
-    val listener: SongListener
 ) : BaseSongAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
@@ -18,7 +17,7 @@ class SwipeSongAdapter constructor(
         val song = getItem(position)
         val binding = holder.binding as SwipeItemBinding
         binding.song = song
-        binding.listener = listener
+//        binding.listener = listener
         binding.executePendingBindings()
     }
 }

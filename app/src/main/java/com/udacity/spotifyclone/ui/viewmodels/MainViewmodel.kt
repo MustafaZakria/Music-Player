@@ -20,6 +20,7 @@ import javax.inject.Inject
 class MainViewmodel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
+
     private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
     val mediaItems: LiveData<Resource<List<Song>>> = _mediaItems
 
@@ -48,7 +49,6 @@ class MainViewmodel @Inject constructor(
                         )
 
                     }
-                    Log.d("***", items.toString())
                     _mediaItems.postValue(Resource.success(items))
                 }
             })

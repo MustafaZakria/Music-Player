@@ -5,6 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.udacity.spotifyclone.R
+import com.udacity.spotifyclone.adapter.SwipeSongAdapter
 import com.udacity.spotifyclone.exoplayer.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
@@ -34,5 +35,7 @@ object AppModule {
             .diskCacheStrategy(DiskCacheStrategy.DATA)
     )
 
-
+    @Provides
+    @Singleton
+    fun provideSwipeSongAdapter() = SwipeSongAdapter()
 }
