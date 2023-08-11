@@ -35,7 +35,4 @@ object AppModule {
             .diskCacheStrategy(DiskCacheStrategy.DATA)
     )
 
-    @Provides
-    @Singleton
-    fun provideSwipeSongAdapter() = SwipeSongAdapter()
 }
