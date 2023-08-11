@@ -4,10 +4,10 @@
     <data>
         <variable
             name="song"
-            type="com.udacity.spotifyclone.data.models.Song" />
+            type="com.zeko.musicplayer.data.models.Song" />
         <variable
             name="listener"
-            type="com.udacity.spotifyclone.adapter.SongListener" />
+            type="com.zeko.musicplayer.adapter.SongListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

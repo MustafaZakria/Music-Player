@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.udacity.spotifyclone">
+    package="com.zeko.musicplayer">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name=".SpotifyApplication"
+        android:name="com.zeko.musicplayer.MusicPlayerApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,14 +18,14 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
 
-        <service android:name=".exoplayer.MusicService"
+        <service android:name="com.zeko.musicplayer.exoplayer.MusicService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.zeko.musicplayer.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

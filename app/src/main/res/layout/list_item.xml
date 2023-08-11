@@ -5,10 +5,10 @@
     <data>
         <variable
             name="song"
-            type="com.udacity.spotifyclone.data.models.Song" />
+            type="com.zeko.musicplayer.data.models.Song" />
         <variable
             name="listener"
-            type="com.udacity.spotifyclone.adapter.SongListener" />
+            type="com.zeko.musicplayer.adapter.SongListener" />
     </data>
 
     
@@ -26,7 +26,7 @@
             android:layout_height="75dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:SongImage="@{song.imageUrl}"/>
+            app:SongImage="@{song}"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvPrimary"
